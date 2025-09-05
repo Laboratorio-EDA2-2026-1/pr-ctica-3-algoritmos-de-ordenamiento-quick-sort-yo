@@ -157,7 +157,10 @@ int elegir_destino(const Destino *destinos, int n) {
     double mejor_dif = 9999999;
     for (int i = 0; i < n; i++) {
         int valor = destinos[i].es_conocido ? destinos[i].costo : valor_desconocido;
-        double dif = fabs(valor - media);
+        double dif = valor - media;
+        if (dif < 0) {
+            dif = -dif;
+        }
         if (dif < mejor_dif) {
             mejor_dif = dif;
             indice = i;
