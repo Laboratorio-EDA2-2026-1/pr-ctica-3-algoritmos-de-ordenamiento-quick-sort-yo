@@ -27,7 +27,19 @@ void intercambiar(int *a, int *b) {
 */
 int particion(int arr[], int bajo, int alto) {
     // Escribe aquí tu función
-    return -1; // Placeholder, reemplazar por el índice real del pivote
+    int pivote=arr[alto];
+    int i=bajo-1;
+
+    for (int k = bajo; k < alto ; ++k)
+    {
+        if (arr[k]<=pivote)
+        {
+            i=i+1;
+            intercambiar(&arr[i],&arr[k]);
+        }
+    }
+    intercambiar(&arr[i+1],&arr[alto]);
+    return i+1; 
 }
 
 /*
@@ -35,108 +47,14 @@ int particion(int arr[], int bajo, int alto) {
     - Caso base: si bajo >= alto, terminar.
     - Paso recursivo: llamar a particion, y aplicar QuickSort en las dos mitades.
 */
-void quicksort(int arr[], int bajo, int alto) {
+void quicksort(int arr[], int bajo, int alto){
     // Escribe aquí tu función
-}
-
-/* Función auxiliar para imprimir un arreglo */
-void imprimir_arreglo(int arr[], int n) {
-    for (int i = 0; i < n; i++) {
-        printf("%d ", arr[i]);
-    }
-    printf("\n");
-}
-
-int main(void) {
-    int n;
-    printf("Ingrese el número de elementos: ");
-    scanf("%d", &n);
-
-    int *arr = (int *)malloc(n * sizeof(int));
-    if (!arr) {
-        fprintf(stderr, "Error: memoria insuficiente.\n");
-        return 1;
-    }
-
-    printf("Ingrese los %d elementos:\n", n);
-    for (int i = 0; i < n; i++) {
-        scanf("%d", &arr[i]);
-    }
-
-    printf("Arreglo original:\n");
-    imprimir_arreglo(arr, n);
-
-    quicksort(arr, 0, n - 1);  // Llamada al algoritmo
-
-    printf("Arreglo ordenado:\n");
-    imprimir_arreglo(arr, n);
-
-    free(arr);
-    return 0;
-}
-#include <stdio.h>
-#include <stdlib.h>
-
-/*
-  Ejercicio: Completar la implementación del algoritmo QuickSort.
-
-  Recordatorio:
-    - QuickSort es un algoritmo de ordenamiento basado en "divide y conquista".
-    - Se elige un pivote y se reordenan los elementos de modo que:
-         * a la izquierda del pivote: menores o iguales,
-         * a la derecha del pivote: mayores.
-    - Luego se aplica recursivamente en las dos mitades.
-*/
-
-/* Función para intercambiar dos elementos */
-void intercambiar(int *a, int *b) {
-    int temp = *a;
-    *a = *b;
-    *b = temp;
-}
-
-/*
-  Función de partición:
-    - Debe elegir un pivote (por ejemplo, el último elemento).
-    - Reordenar el arreglo colocando menores a la izquierda y mayores a la derecha.
-    - Retornar el índice final del pivote.
-*/
-int particion(int arr[], int bajo, int alto) {
-    // Escribe aquí tu función
-    int pivote=alto;
-    int a=0,b=0;
-    int i=bajo-1;
     if (bajo<alto)
     {
-        for (int k = bajo; k < alto-1 ; ++k)
-        {
-            if (arr[k]<=arr[pivote])
-            {
-                i=i+1;
-                a=arr[i];
-                b=arr[k];
-                intercambiar(&a,&b);
-            }
-        }
-        arr[i+1]=arr[pivote];
+        int pivote=particion(arr,bajo,alto); 
+        quicksort(arr,bajo,pivote-1);
+        quicksort(arr,pivote+1,alto);
     }
-    return -1; // Placeholder, reemplazar por el índice real del pivote
-}
-
-/*
-  Función QuickSort:
-    - Caso base: si bajo >= alto, terminar.
-    - Paso recursivo: llamar a particion, y aplicar QuickSort en las dos mitades.
-*/
-void quicksort(int arr[], int bajo, int alto) {
-    // Escribe aquí tu función
-    if (bajo>=alto)
-    {
-        return; 
-    }
-    int pivote=alto;
-    particion(arr,bajo,pivote);
-    particion(arr,pivote+1,alto);
 }
 
 /* Función auxiliar para imprimir un arreglo */
