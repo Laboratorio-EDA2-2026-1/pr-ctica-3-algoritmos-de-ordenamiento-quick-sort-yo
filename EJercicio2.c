@@ -58,7 +58,9 @@ int particion_por_promedio(int arr[], int bajo, int alto, double pivote) {
             intercambiar(&arr[i], &arr[j]);
         }
     }
-    if (i == alto) i= alto-1;
+    if (i == alto){
+        i= alto-1;
+    } 
     return i;
 }
 
@@ -72,7 +74,9 @@ int particion_por_promedio(int arr[], int bajo, int alto, double pivote) {
 */
 void quicksort_promedio(int arr[], int bajo, int alto) {
     // Escribe aquí tu función
-    if (bajo >= alto) return;
+    if (bajo >= alto){
+        return;
+    }
 
     double pivote = calcular_promedio_segmento(arr, bajo, alto);
     int k = particion_por_promedio(arr, bajo, alto, pivote);
