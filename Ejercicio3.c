@@ -117,8 +117,54 @@ int elegir_destino(const Destino *destinos, int n) {
 
     // 4) Hallar el índice con distancia mínima a la media
     //      - manejar empates de forma determinista (p. ej., menor índice)
+    int conocidos = 0, desconocidos = 0;
+    int suma = 0;
+    int max_conocido = -1;
 
-    return -1; // Placeholder: reemplaza por el índice elegido
+    // Aqui contamos conocidos y desconocidos
+    for (int i = 0; i < n; i++) {
+        if (destinos[i].es_conocido) {
+            conocidos++;
+            suma += destinos[i].costo;
+            if (destinos[i].costo > max_conocido) {
+                max_conocido = destinos[i].costo;
+            }
+        } else {
+            desconocidos++;
+        }
+    }
+
+    // Si la mayoría son desconocidos, elegimos uno al azar
+    if (desconocidos > conocidos) {
+        int elegido = -1;
+        while (elegido == -1) {
+            int r = rand() % n;
+            if (!destinos[r].es_conocido) {
+                elegido = r;
+            }
+        }
+        return elegido;
+    }
+
+    // con esto calculamos la media de los conocidos
+    double media = (double)suma / conocidos;
+
+    // Para los desconocidos, usamos max_conocido + 1
+    int valor_desconocido = max_conocido + 1;
+
+    // Buscamos el más cercano a la media
+    int indice = 0;
+    double mejor_dif = 9999999;
+    for (int i = 0; i < n; i++) {
+        int valor = destinos[i].es_conocido ? destinos[i].costo : valor_desconocido;
+        double dif = fabs(valor - media);
+        if (dif < mejor_dif) {
+            mejor_dif = dif;
+            indice = i;
+        }
+    }
+
+    return indice;
 }
 
 int main(void) {
