@@ -42,6 +42,50 @@
  * - No está permitido comparar tuerca vs tuerca ni tornillo vs tornillo.
  *
  */
+// Función auxiliar la cual reorganiza las tuercas usando un tornillo pivote
+int partir_tuercas(int tuercas[], int bajo, int alto, int tornilloPivote) {
+    int i = bajo, temp;
+    for (int j = bajo; j < alto; j++) {
+        if (tuercas[j] < tornilloPivote) {
+            temp = tuercas[i];
+            tuercas[i] = tuercas[j];
+            tuercas[j] = temp;
+            i++;
+        } else if (tuercas[j] == tornilloPivote) {
+            temp = tuercas[j];
+            tuercas[j] = tuercas[alto];
+            tuercas[alto] = temp;
+            j--;
+        }
+    }
+    temp = tuercas[i];
+    tuercas[i] = tuercas[alto];
+    tuercas[alto] = temp;
+    return i;
+}
+
+// Función auxiliar la cual reorganiza los tornillos usando una tuerca pivote
+int partir_tornillos(int tornillos[], int bajo, int alto, int tuercaPivote) {
+    int i = bajo, temp;
+    for (int j = bajo; j < alto; j++) {
+        if (tornillos[j] < tuercaPivote) {
+            temp = tornillos[i];
+            tornillos[i] = tornillos[j];
+            tornillos[j] = temp;
+            i++;
+        } else if (tornillos[j] == tuercaPivote) {
+            temp = tornillos[j];
+            tornillos[j] = tornillos[alto];
+            tornillos[alto] = temp;
+            j--;
+        }
+    }
+    temp = tornillos[i];
+    tornillos[i] = tornillos[alto];
+    tornillos[alto] = temp;
+    return i;
+}
+
 void emparejar_tuercas_y_tornillos(int tuercas[], int tornillos[], int n) {
     // Escribe aquí tu función
     //
@@ -53,6 +97,35 @@ void emparejar_tuercas_y_tornillos(int tuercas[], int tornillos[], int n) {
     //   partir_tornillos(tornillos, bajo, alto, tuercas[indicePivote]);
     //
     // Y luego hacer llamadas recursivas en los subarreglos.
+    int bajo = 0;
+    int alto = n - 1;
+
+    int pilaBajo[100], pilaAlto[100];
+    int tope = 0;
+
+    pilaBajo[tope] = bajo;
+    pilaAlto[tope] = alto;
+    tope++;
+
+    while (tope > 0) {
+        tope--;
+        bajo = pilaBajo[tope];
+        alto = pilaAlto[tope];
+
+        if (bajo < alto) {
+            int indiceTuerca = partir_tuercas(tuercas, bajo, alto, tornillos[alto]);
+            partir_tornillos(tornillos, bajo, alto, tuercas[indiceTuerca]);
+
+            // Simulamos la recursión con la pila
+            pilaBajo[tope] = bajo;
+            pilaAlto[tope] = indiceTuerca - 1;
+            tope++;
+
+            pilaBajo[tope] = indiceTuerca + 1;
+            pilaAlto[tope] = alto;
+            tope++;
+        }
+    }
 }
 
 /* Imprime un arreglo lineal */
