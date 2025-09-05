@@ -118,3 +118,91 @@ Notas de implementación:
 - Define claramente qué lado incluye los == pivote para asegurar terminación.
 - No insertes el pivote en el arreglo (restricción).
 */
+#include <stdio.h>
+#include <stdlib.h>
+
+/* Intercambiar dos enteros */
+static inline void intercambiar(int *a, int *b) {
+    int t = *a; *a = *b; *b = t;
+}
+
+/* Devuelve el promedio (double) de arr[bajo..alto] */
+double calcular_promedio_segmento(int arr[], int bajo, int alto) {
+    long long suma = 0; // para evitar overflow si los números son grandes
+    for (int i = bajo; i <= alto; i++) {
+        suma += arr[i];
+    }
+    return (double)suma / (alto - bajo + 1);
+}
+
+/*
+  Partición usando pivote = promedio.
+  Convención usada:
+    - A la izquierda: arr[i] < pivote
+    - A la derecha: arr[i] >= pivote
+  Nota: El pivote es double y NO se inserta en el arreglo.
+*/
+int particion_por_promedio(int arr[], int bajo, int alto, double pivote) {
+    int i = bajo - 1; // índice de los < pivote
+
+    for (int j = bajo; j <= alto; j++) {
+        if ((double)arr[j] < pivote) {
+            i++;
+            intercambiar(&arr[i], &arr[j]);
+        }
+    }
+    // La posición donde termina el grupo de < pivote
+    return i;
+}
+
+/*
+  QuickSort con pivote = promedio.
+*/
+void quicksort_promedio(int arr[], int bajo, int alto) {
+    if (bajo >= alto) return;
+
+    double pivote = calcular_promedio_segmento(arr, bajo, alto);
+    int k = particion_por_promedio(arr, bajo, alto, pivote);
+
+    // Importante: dividir bien los rangos
+    quicksort_promedio(arr, bajo, k);
+    quicksort_promedio(arr, k + 1, alto);
+}
+
+/* Imprimir arreglo */
+void imprimir_arreglo(int arr[], int n) {
+    for (int i = 0; i < n; i++) {
+        if (i) printf(" ");
+        printf("%d", arr[i]);
+    }
+    printf("\n");
+}
+
+int main(void) {
+    int n;
+    if (scanf("%d", &n) != 1 || n <= 0) {
+        fprintf(stderr, "Error: n inválido.\n");
+        return 1;
+    }
+
+    int *arr = (int *)malloc(n * sizeof(int));
+    if (!arr) {
+        fprintf(stderr, "Error: memoria insuficiente.\n");
+        return 1;
+    }
+
+    for (int i = 0; i < n; i++) {
+        if (scanf("%d", &arr[i]) != 1) {
+            fprintf(stderr, "Error: entrada inválida en la posición %d.\n", i + 1);
+            free(arr);
+            return 1;
+        }
+    }
+
+    quicksort_promedio(arr, 0, n - 1);
+
+    imprimir_arreglo(arr, n);
+
+    free(arr);
+    return 0;
+}
